@@ -1,0 +1,92 @@
+<div class="auth-container">
+  <mat-card class="auth-card">
+    <mat-card-header>
+      <mat-card-title>Milk Management System</mat-card-title>
+      <mat-card-subtitle>{{ isLoginMode ? 'Please login to continue' : 'Create your account' }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Mode Toggle -->
+      <div class="mode-toggle">
+        <button mat-button 
+                [class.active]="isLoginMode" 
+                (click)="switchMode()"
+                class="toggle-btn">
+          Login
+        </button>
+        <button mat-button 
+                [class.active]="!isLoginMode" 
+                (click)="switchMode()"
+                class="toggle-btn">
+          Sign Up
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" *ngIf="isLoginMode">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" required>
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
+            Username is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" required>
+          <mat-icon matPrefix>lock</mat-icon>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+            Password is required
+          </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="loading || loginForm.invalid">
+          <span *ngIf="!loading">Login</span>
+          <span *ngIf="loading">Logging in...</span>
+        </button>
+      </form>
+
+      <!-- Signup Form -->
+      <form [formGroup]="signupForm" (ngSubmit)="onSignup()" *ngIf="!isLoginMode">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" required>
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-error *ngIf="signupForm.get('username')?.hasError('required')">
+            Username is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" required>
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-error *ngIf="signupForm.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="signupForm.get('email')?.hasError('email')">
+            Please enter a valid email
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" required>
+          <mat-icon matPrefix>lock</mat-icon>
+          <mat-error *ngIf="signupForm.get('password')?.hasError('required')">
+            Password is required
+          </mat-error>
+          <mat-error *ngIf="signupForm.get('password')?.hasError('minlength')">
+            Password must be at least 6 characters
+          </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="loading || signupForm.invalid">
+          <span *ngIf="!loading">Sign Up</span>
+          <span *ngIf="loading">Creating Account...</span>
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

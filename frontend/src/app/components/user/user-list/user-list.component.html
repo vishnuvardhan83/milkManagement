@@ -1,0 +1,64 @@
+<div class="user-list-container">
+  <div class="header">
+    <h1>User Management</h1>
+    <button mat-raised-button color="primary" (click)="openAddDialog()">
+      <mat-icon>person_add</mat-icon>
+      Add User
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading" class="table-container">
+    <table mat-table [dataSource]="users" class="mat-elevation-z8">
+      <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef>Username</th>
+        <td mat-cell *matCellDef="let user">{{ user.username }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="roles">
+        <th mat-header-cell *matHeaderCellDef>Roles</th>
+        <td mat-cell *matCellDef="let user">{{ formatRoles(user.roles) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="enabled">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let user">
+          <span [class]="user.enabled ? 'status-active' : 'status-inactive'">
+            {{ user.enabled ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let user">
+          <button mat-icon-button (click)="openEditDialog(user)" color="primary" matTooltip="Edit User">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="openRoleAssignmentDialog(user)" color="accent" matTooltip="Assign Roles">
+            <mat-icon>admin_panel_settings</mat-icon>
+          </button>
+          <button mat-icon-button (click)="toggleUserStatus(user)" 
+                  [color]="user.enabled ? 'warn' : 'primary'" 
+                  [matTooltip]="user.enabled ? 'Disable User' : 'Enable User'">
+            <mat-icon>{{ user.enabled ? 'block' : 'check_circle' }}</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteUser(user.id!)" color="warn" matTooltip="Delete User">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+<div class="app-container" *ngIf="isAuthenticated()">
+  <mat-toolbar color="primary">
+    <span>Milk Management System</span>
+    <span class="spacer"></span>
+    <button mat-button [matMenuTriggerFor]="menu">
+      <mat-icon>account_circle</mat-icon>
+      Account
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+
+  <div class="content">
+    <mat-sidenav-container class="sidenav-container">
+      <mat-sidenav 
+        #sidenav
+        mode="side" 
+        [opened]="sidenavOpened"
+        class="sidenav"
+        (mouseenter)="onSidenavHover()"
+        (mouseleave)="onSidenavLeave()">
+        <mat-nav-list>
+          <a mat-list-item routerLink="/dashboard" routerLinkActive="active" (click)="onNavItemClick()">
+            <mat-icon>dashboard</mat-icon>
+            <span class="nav-text">Dashboard</span>
+          </a>
+          <a mat-list-item routerLink="/customers" routerLinkActive="active" (click)="onNavItemClick()">
+            <mat-icon>people</mat-icon>
+            <span class="nav-text">Customers</span>
+          </a>
+          <a mat-list-item routerLink="/deliveries" routerLinkActive="active" (click)="onNavItemClick()">
+            <mat-icon>local_shipping</mat-icon>
+            <span class="nav-text">Deliveries</span>
+          </a>
+          <a mat-list-item routerLink="/products" routerLinkActive="active" (click)="onNavItemClick()">
+            <mat-icon>inventory</mat-icon>
+            <span class="nav-text">Products</span>
+          </a>
+          <a mat-list-item routerLink="/cart" routerLinkActive="active" (click)="onNavItemClick()" *ngIf="isCustomer()">
+            <mat-icon>shopping_cart</mat-icon>
+            <span class="nav-text">Cart / Orders</span>
+          </a>
+          <a mat-list-item routerLink="/orders" routerLinkActive="active" (click)="onNavItemClick()" *ngIf="isCustomer()">
+            <mat-icon>history</mat-icon>
+            <span class="nav-text">Order History</span>
+          </a>
+          <a mat-list-item routerLink="/payments" routerLinkActive="active" (click)="onNavItemClick()">
+            <mat-icon>payment</mat-icon>
+            <span class="nav-text">Payment Updates</span>
+          </a>
+          <a mat-list-item routerLink="/users" routerLinkActive="active" (click)="onNavItemClick()" *ngIf="isAdmin()">
+            <mat-icon>person_add</mat-icon>
+            <span class="nav-text">Add Users</span>
+          </a>
+        </mat-nav-list>
+      </mat-sidenav>
+
+      <mat-sidenav-content>
+        <div class="sidenav-trigger" 
+             (mouseenter)="onSidenavHover()" 
+             (mouseleave)="onSidenavLeave()"></div>
+        <router-outlet></router-outlet>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>
+</div>
+
+<router-outlet *ngIf="!isAuthenticated()"></router-outlet>

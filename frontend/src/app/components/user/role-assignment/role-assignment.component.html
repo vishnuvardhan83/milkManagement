@@ -1,0 +1,50 @@
+<div class="role-assignment-container">
+  <h2 mat-dialog-title>Assign Roles</h2>
+  
+  <mat-dialog-content>
+    <div class="user-info">
+      <p><strong>User:</strong> {{ user.username }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+    </div>
+
+    <div class="current-roles" *ngIf="user.roles && user.roles.length > 0">
+      <h3>Current Roles:</h3>
+      <div class="role-chips">
+        <mat-chip *ngFor="let role of user.roles" class="current-role-chip">
+          {{ formatRoleName(role) }}
+        </mat-chip>
+      </div>
+    </div>
+
+    <div class="role-selection">
+      <h3>Select Roles:</h3>
+      <form [formGroup]="roleForm">
+        <div class="role-options">
+          <mat-checkbox 
+            *ngFor="let role of availableRoles" 
+            [checked]="isRoleSelected(role)"
+            (change)="toggleRole(role)"
+            class="role-checkbox">
+            {{ formatRoleName(role) }}
+          </mat-checkbox>
+        </div>
+      </form>
+    </div>
+
+    <div class="selected-roles" *ngIf="selectedRoles.length > 0">
+      <h3>Selected Roles:</h3>
+      <div class="role-chips">
+        <mat-chip *ngFor="let role of selectedRoles" class="selected-role-chip">
+          {{ formatRoleName(role) }}
+        </mat-chip>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="selectedRoles.length === 0">
+      Update Roles
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,125 @@
+<div class="delivery-list-container">
+  <div class="header">
+    <h1>Milk Deliveries</h1>
+    <div class="header-actions">
+      <div class="delivery-count">
+        <span class="count-label">Total:</span>
+        <span class="count-value">{{ allDeliveries.length }}</span>
+        <span class="count-label" *ngIf="filteredDeliveries.length !== allDeliveries.length">
+          (Showing: {{ filteredDeliveries.length }})
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Toolbar -->
+  <div class="search-filter-toolbar">
+    <div class="toolbar-left">
+      <span class="display-count">Displaying {{ filteredDeliveries.length }} of {{ allDeliveries.length }}</span>
+      <mat-form-field appearance="outline" class="compact-search-field">
+        <input matInput [formControl]="searchControl" placeholder="Search">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+    </div>
+    <div class="toolbar-right">
+      <button mat-icon-button (click)="toggleFilters()" [class.active]="showFilters" matTooltip="Filters">
+        <mat-icon>filter_list</mat-icon>
+      </button>
+      <button mat-icon-button (click)="loadDeliveries()" matTooltip="Refresh">
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button mat-icon-button (click)="openAddDialog()" matTooltip="Add Delivery">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Expandable Filter Panel -->
+  <div class="filter-panel" [class.expanded]="showFilters">
+    <div class="filter-content">
+      <mat-form-field appearance="outline" class="compact-filter-field">
+        <mat-label>Customer</mat-label>
+        <mat-select [formControl]="filterCustomerControl">
+          <mat-option value="">All</mat-option>
+          <mat-option *ngFor="let customer of customers" [value]="customer.id">
+            {{ customer.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="compact-filter-field">
+        <mat-label>Date From</mat-label>
+        <input matInput [matDatepicker]="pickerFrom" [formControl]="filterDateFromControl" placeholder="From">
+        <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+        <mat-datepicker #pickerFrom></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="compact-filter-field">
+        <mat-label>Date To</mat-label>
+        <input matInput [matDatepicker]="pickerTo" [formControl]="filterDateToControl" placeholder="To">
+        <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+        <mat-datepicker #pickerTo></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="compact-filter-field">
+        <mat-label>Min Amount</mat-label>
+        <input matInput type="number" [formControl]="minAmountControl" placeholder="0">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="compact-filter-field">
+        <mat-label>Max Amount</mat-label>
+        <input matInput type="number" [formControl]="maxAmountControl" placeholder="10000">
+      </mat-form-field>
+
+      <button mat-button (click)="clearFilters()" class="clear-btn">
+        <mat-icon>clear</mat-icon>
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading" class="table-container">
+    <table mat-table [dataSource]="deliveries" class="mat-elevation-z8">
+      <ng-container matColumnDef="deliveryDate">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let delivery">{{ delivery.deliveryDate | date:'shortDate' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="customerId">
+        <th mat-header-cell *matHeaderCellDef>Customer</th>
+        <td mat-cell *matCellDef="let delivery">{{ getCustomerName(delivery.customerId) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="quantityDelivered">
+        <th mat-header-cell *matHeaderCellDef>Quantity (L)</th>
+        <td mat-cell *matCellDef="let delivery">{{ delivery.quantityDelivered }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="pricePerUnit">
+        <th mat-header-cell *matHeaderCellDef>Price/Litre</th>
+        <td mat-cell *matCellDef="let delivery">₹{{ delivery.pricePerUnit }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalAmount">
+        <th mat-header-cell *matHeaderCellDef>Total Amount</th>
+        <td mat-cell *matCellDef="let delivery">₹{{ delivery.totalAmount }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let delivery">
+          <button mat-icon-button color="primary">
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>

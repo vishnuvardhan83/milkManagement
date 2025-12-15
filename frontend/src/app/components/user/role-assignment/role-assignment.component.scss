@@ -1,0 +1,63 @@
+.role-assignment-container {
+  min-width: 400px;
+  max-width: 500px;
+}
+
+.user-info {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.user-info p {
+  margin: 5px 0;
+}
+
+.current-roles,
+.role-selection,
+.selected-roles {
+  margin: 20px 0;
+}
+
+.role-selection h3,
+.current-roles h3,
+.selected-roles h3 {
+  margin-bottom: 10px;
+  color: #1976d2;
+}
+
+.role-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.role-checkbox {
+  margin: 5px 0;
+}
+
+.role-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.current-role-chip {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.selected-role-chip {
+  background-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+mat-dialog-content {
+  padding: 20px;
+}
+
+mat-dialog-actions {
+  padding: 10px 20px;
+}

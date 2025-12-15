@@ -1,0 +1,128 @@
+<div class="customer-list-container">
+  <div class="header">
+    <h1>Customers</h1>
+    <div class="header-actions">
+      <div class="customer-count">
+        <span class="count-label">Total:</span>
+        <span class="count-value">{{ allCustomers.length }}</span>
+        <span class="count-label" *ngIf="filteredCustomers.length !== allCustomers.length">
+          (Showing: {{ filteredCustomers.length }})
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Toolbar -->
+  <div class="search-filter-toolbar">
+    <div class="toolbar-left">
+      <span class="display-count">Displaying {{ filteredCustomers.length }} of {{ allCustomers.length }}</span>
+      <mat-form-field appearance="outline" class="compact-search-field">
+        <input matInput [formControl]="searchControl" placeholder="Search">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+    </div>
+    <div class="toolbar-right">
+      <button mat-icon-button (click)="toggleFilters()" [class.active]="showFilters" matTooltip="Filters">
+        <mat-icon>filter_list</mat-icon>
+      </button>
+      <button mat-icon-button (click)="loadCustomers()" matTooltip="Refresh">
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button mat-icon-button (click)="openAddDialog()" matTooltip="Add Customer">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Expandable Filter Panel -->
+  <div class="filter-panel" [class.expanded]="showFilters">
+    <div class="filter-content">
+      <mat-form-field appearance="outline" class="compact-filter-field">
+        <mat-label>Name</mat-label>
+        <input matInput [formControl]="filterNameControl" placeholder="Customer name">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="compact-filter-field">
+        <mat-label>Status</mat-label>
+        <mat-select [formControl]="filterStatusControl">
+          <mat-option value="">All</mat-option>
+          <mat-option value="ACTIVE">Active</mat-option>
+          <mat-option value="PAUSED">Paused</mat-option>
+          <mat-option value="INACTIVE">Inactive</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="compact-filter-field">
+        <mat-label>Milk Type</mat-label>
+        <mat-select [formControl]="filterMilkTypeControl">
+          <mat-option value="">All</mat-option>
+          <mat-option value="COW">Cow</mat-option>
+          <mat-option value="BUFFALO">Buffalo</mat-option>
+          <mat-option value="BOTH">Both</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-button (click)="clearFilters()" class="clear-btn">
+        <mat-icon>clear</mat-icon>
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading" class="table-container">
+    <table mat-table [dataSource]="customers" class="mat-elevation-z8">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let customer">{{ customer.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="mobileNumber">
+        <th mat-header-cell *matHeaderCellDef>Mobile</th>
+        <td mat-cell *matCellDef="let customer">{{ customer.mobileNumber }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let customer">{{ customer.email || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="dailyMilkQuantity">
+        <th mat-header-cell *matHeaderCellDef>Daily Quantity (L)</th>
+        <td mat-cell *matCellDef="let customer">{{ customer.dailyMilkQuantity }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="milkType">
+        <th mat-header-cell *matHeaderCellDef>Milk Type</th>
+        <td mat-cell *matCellDef="let customer">{{ customer.milkType || 'COW' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="deliveryStatus">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let customer">
+          <span [class]="'status-' + customer.deliveryStatus?.toLowerCase()">
+            {{ customer.deliveryStatus || 'ACTIVE' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let customer">
+          <button mat-icon-button (click)="openEditDialog(customer)" color="primary">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="deleteCustomer(customer.id!)" color="warn">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>

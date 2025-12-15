@@ -1,0 +1,102 @@
+<div class="cart-container">
+  <div class="header">
+    <h1>Shopping Cart</h1>
+    <div class="header-actions">
+      <span class="cart-badge" *ngIf="getTotalItems() > 0">{{ getTotalItems() }} items</span>
+      <button mat-icon-button (click)="clearCart()" *ngIf="cartItems.length > 0" matTooltip="Clear Cart">
+        <mat-icon>delete_sweep</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="cart-content">
+    <!-- Products Available -->
+    <div class="products-section" *ngIf="isCustomer">
+      <h2>Available Products</h2>
+      <div class="products-grid" *ngIf="!loading">
+        <mat-card class="product-card" *ngFor="let product of products">
+          <mat-card-header>
+            <mat-card-title>{{ product.name }}</mat-card-title>
+            <mat-card-subtitle>{{ product.type }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="product-info">
+              <p class="price">₹{{ product.pricePerUnit | number:'1.2-2' }} / {{ product.unit }}</p>
+              <p class="quantity">Available: {{ product.quantity }} {{ product.unit }}</p>
+            </div>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-raised-button color="primary" (click)="addToCart(product)">
+              <mat-icon>add_shopping_cart</mat-icon>
+              Add to Cart
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+      <div *ngIf="loading" class="loading">
+        <mat-spinner></mat-spinner>
+      </div>
+    </div>
+
+    <!-- Cart Items -->
+    <div class="cart-section">
+      <h2>Cart Items ({{ getTotalItems() }})</h2>
+      <div *ngIf="cartItems.length === 0" class="empty-cart">
+        <mat-icon>shopping_cart</mat-icon>
+        <p>Your cart is empty</p>
+        <p class="hint">Add products from the list above to get started</p>
+      </div>
+
+      <div *ngIf="cartItems.length > 0" class="cart-items">
+        <mat-card class="cart-item" *ngFor="let item of cartItems">
+          <div class="item-content">
+            <div class="item-info">
+              <h3>{{ item.product.name }}</h3>
+              <p class="item-type">{{ item.product.type }}</p>
+              <p class="item-price">₹{{ item.product.pricePerUnit | number:'1.2-2' }} / {{ item.product.unit }}</p>
+            </div>
+            <div class="item-quantity">
+              <button mat-icon-button (click)="updateQuantity(item, -1)">
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span class="quantity-value">{{ item.quantity }}</span>
+              <button mat-icon-button (click)="updateQuantity(item, 1)">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+            <div class="item-total">
+              <p class="total-price">₹{{ (item.product.pricePerUnit * item.quantity) | number:'1.2-2' }}</p>
+            </div>
+            <div class="item-actions">
+              <button mat-icon-button color="warn" (click)="removeFromCart(item)" matTooltip="Remove">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+
+      <!-- Cart Summary -->
+      <div class="cart-summary" *ngIf="cartItems.length > 0">
+        <mat-card>
+          <mat-card-content>
+            <div class="summary-row">
+              <span>Total Items:</span>
+              <span>{{ getTotalItems() }}</span>
+            </div>
+            <div class="summary-row total">
+              <span>Total Amount:</span>
+              <span>₹{{ getTotalPrice() | number:'1.2-2' }}</span>
+            </div>
+          </mat-card-content>
+          <mat-card-actions>
+            <button mat-raised-button color="primary" (click)="checkout()" [disabled]="loading">
+              <mat-icon>payment</mat-icon>
+              Proceed to Payment
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,147 @@
+<div class="payment-list-container">
+  <div class="header">
+    <h1>Payment Updates</h1>
+    <div class="header-actions">
+      <div class="payment-count">
+        <span class="count-label">Total:</span>
+        <span class="count-value">{{ allPayments.length }}</span>
+        <span class="count-label" *ngIf="filteredPayments.length !== allPayments.length">
+          (Showing: {{ filteredPayments.length }})
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Toolbar -->
+  <div class="search-filter-toolbar">
+    <div class="toolbar-left">
+      <span class="display-count">Displaying {{ filteredPayments.length }} of {{ allPayments.length }}</span>
+      <mat-form-field appearance="outline" class="compact-search-field">
+        <input matInput [formControl]="searchControl" placeholder="Search">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+    </div>
+    <div class="toolbar-right">
+      <button mat-icon-button (click)="toggleFilters()" [class.active]="showFilters" matTooltip="Filters">
+        <mat-icon>filter_list</mat-icon>
+      </button>
+      <button mat-icon-button (click)="loadPayments()" matTooltip="Refresh">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Expandable Filter Panel -->
+  <div class="filter-panel" [class.expanded]="showFilters">
+    <div class="filter-content">
+      <mat-form-field appearance="outline" class="compact-filter-field">
+        <mat-label>Status</mat-label>
+        <mat-select [formControl]="filterStatusControl">
+          <mat-option value="">All</mat-option>
+          <mat-option value="PENDING">Pending</mat-option>
+          <mat-option value="PAID">Paid</mat-option>
+          <mat-option value="PARTIAL">Partial</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="compact-filter-field">
+        <mat-label>Method</mat-label>
+        <mat-select [formControl]="filterMethodControl">
+          <mat-option value="">All</mat-option>
+          <mat-option value="CASH">Cash</mat-option>
+          <mat-option value="ONLINE">Online</mat-option>
+          <mat-option value="CHEQUE">Cheque</mat-option>
+          <mat-option value="OTHER">Other</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="compact-filter-field">
+        <mat-label>Date From</mat-label>
+        <input matInput [matDatepicker]="pickerFrom" [formControl]="filterDateFromControl" placeholder="From">
+        <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+        <mat-datepicker #pickerFrom></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="compact-filter-field">
+        <mat-label>Date To</mat-label>
+        <input matInput [matDatepicker]="pickerTo" [formControl]="filterDateToControl" placeholder="To">
+        <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+        <mat-datepicker #pickerTo></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="compact-filter-field">
+        <mat-label>Min Amount</mat-label>
+        <input matInput type="number" [formControl]="minAmountControl" placeholder="0">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="compact-filter-field">
+        <mat-label>Max Amount</mat-label>
+        <input matInput type="number" [formControl]="maxAmountControl" placeholder="100000">
+      </mat-form-field>
+
+      <button mat-button (click)="clearFilters()" class="clear-btn">
+        <mat-icon>clear</mat-icon>
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading" class="table-container">
+    <table mat-table [dataSource]="payments" class="mat-elevation-z8">
+      <ng-container matColumnDef="customerName">
+        <th mat-header-cell *matHeaderCellDef>Customer</th>
+        <td mat-cell *matCellDef="let payment">{{ payment.customerName || 'N/A' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="invoiceId">
+        <th mat-header-cell *matHeaderCellDef>Invoice ID</th>
+        <td mat-cell *matCellDef="let payment">{{ payment.invoiceId }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>Amount</th>
+        <td mat-cell *matCellDef="let payment">₹{{ payment.amount | number:'1.2-2' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="paymentDate">
+        <th mat-header-cell *matHeaderCellDef>Payment Date</th>
+        <td mat-cell *matCellDef="let payment">{{ payment.paymentDate | date:'shortDate' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="paymentMethod">
+        <th mat-header-cell *matHeaderCellDef>Payment Method</th>
+        <td mat-cell *matCellDef="let payment">{{ payment.paymentMethod || 'N/A' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let payment">
+          <span [class]="'status-' + payment.status?.toLowerCase()" class="status-badge">
+            {{ payment.status }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let payment">
+          <button mat-icon-button color="primary" (click)="updatePaymentStatus(payment, 'PAID')" 
+                  *ngIf="payment.status !== 'PAID'" matTooltip="Mark as Paid">
+            <mat-icon>check_circle</mat-icon>
+          </button>
+          <button mat-icon-button color="accent" (click)="updatePaymentStatus(payment, 'PARTIAL')" 
+                  *ngIf="payment.status === 'PENDING'" matTooltip="Mark as Partial">
+            <mat-icon>pending</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>

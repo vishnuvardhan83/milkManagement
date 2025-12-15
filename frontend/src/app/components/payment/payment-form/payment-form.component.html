@@ -1,0 +1,77 @@
+<h2 mat-dialog-title>Payment Information</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="paymentForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" required>
+      <mat-error *ngIf="paymentForm.get('name')?.hasError('required')">
+        Name is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Phone Number</mat-label>
+      <input matInput formControlName="phoneNumber" required>
+      <mat-icon matPrefix>phone</mat-icon>
+      <mat-error *ngIf="paymentForm.get('phoneNumber')?.hasError('required')">
+        Phone number is required
+      </mat-error>
+      <mat-error *ngIf="paymentForm.get('phoneNumber')?.hasError('pattern')">
+        Invalid phone number (10 digits required)
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Pending Amount</mat-label>
+      <input matInput type="number" formControlName="pendingAmount" required>
+      <mat-icon matPrefix>currency_rupee</mat-icon>
+      <mat-error *ngIf="paymentForm.get('pendingAmount')?.hasError('required')">
+        Pending amount is required
+      </mat-error>
+      <mat-error *ngIf="paymentForm.get('pendingAmount')?.hasError('min')">
+        Amount must be positive
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Payment Date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="paymentDate" required>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="paymentForm.get('paymentDate')?.hasError('required')">
+        Payment date is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Payment Method</mat-label>
+      <mat-select formControlName="paymentMethod" required>
+        <mat-option value="CASH">Cash</mat-option>
+        <mat-option value="ONLINE">Online</mat-option>
+        <mat-option value="CHEQUE">Cheque</mat-option>
+        <mat-option value="OTHER">Other</mat-option>
+      </mat-select>
+      <mat-error *ngIf="paymentForm.get('paymentMethod')?.hasError('required')">
+        Payment method is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Notes</mat-label>
+      <textarea matInput formControlName="notes" rows="3"></textarea>
+    </mat-form-field>
+
+    <div class="total-amount-info" *ngIf="data?.totalAmount">
+      <p><strong>Total Order Amount: ₹{{ data.totalAmount | number:'1.2-2' }}</strong></p>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!paymentForm.valid">
+    <mat-icon>payment</mat-icon>
+    Submit Payment
+  </button>
+</mat-dialog-actions>

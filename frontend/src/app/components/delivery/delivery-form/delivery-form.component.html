@@ -1,0 +1,55 @@
+<h2 mat-dialog-title>Add Milk Delivery</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="deliveryForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Customer</mat-label>
+      <mat-select formControlName="customerId" required>
+        <mat-option *ngFor="let customer of customers" [value]="customer.id">
+          {{ customer.name }} - {{ customer.mobileNumber }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="deliveryForm.get('customerId')?.hasError('required')">
+        Customer is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Delivery Date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="deliveryDate" required>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="deliveryForm.get('deliveryDate')?.hasError('required')">
+        Delivery date is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Quantity Delivered (L)</mat-label>
+      <input matInput type="number" formControlName="quantityDelivered" required>
+      <mat-error *ngIf="deliveryForm.get('quantityDelivered')?.hasError('required')">
+        Quantity is required
+      </mat-error>
+      <mat-error *ngIf="deliveryForm.get('quantityDelivered')?.hasError('min')">
+        Quantity must be greater than 0
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Price per Litre (₹)</mat-label>
+      <input matInput type="number" formControlName="pricePerUnit">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Notes</mat-label>
+      <textarea matInput formControlName="notes" rows="3"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!deliveryForm.valid">
+    Create Delivery
+  </button>
+</mat-dialog-actions>

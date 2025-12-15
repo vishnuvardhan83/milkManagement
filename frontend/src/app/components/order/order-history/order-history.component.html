@@ -1,0 +1,76 @@
+<div class="order-history-container">
+  <div class="header">
+    <h1>Order History</h1>
+    <div class="header-actions">
+      <button mat-icon-button (click)="loadOrders()" matTooltip="Refresh">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading && orders.length === 0" class="no-orders">
+    <mat-icon>shopping_bag</mat-icon>
+    <p>No orders found</p>
+    <p class="hint">Your order history will appear here</p>
+  </div>
+
+  <div *ngIf="!loading && orders.length > 0" class="orders-list">
+    <mat-card *ngFor="let order of orders" class="order-card">
+      <mat-card-header>
+        <div class="order-header">
+          <div>
+            <mat-card-title>Order #{{ order.id }}</mat-card-title>
+            <mat-card-subtitle>
+              Date: {{ order.orderDate | date:'medium' }}
+              <span class="status-badge" [style.background-color]="getStatusColor(order.status)">
+                {{ order.status || 'PENDING' }}
+              </span>
+            </mat-card-subtitle>
+          </div>
+          <div class="order-total">
+            <span class="total-label">Total:</span>
+            <span class="total-amount">₹{{ order.totalAmount | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="order-items">
+          <h3>Items Ordered:</h3>
+          <div class="items-list">
+            <div *ngFor="let item of order.items" class="order-item">
+              <div class="item-details">
+                <span class="item-name">Product ID: {{ item.productId }}</span>
+                <span class="item-quantity">Qty: {{ item.quantity }}</span>
+              </div>
+              <div class="item-price">₹{{ (item.price * item.quantity) | number:'1.2-2' }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="order-summary">
+          <div class="summary-row">
+            <span>Total Items:</span>
+            <span>{{ getTotalItems(order) }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Total Amount:</span>
+            <span class="amount">₹{{ order.totalAmount | number:'1.2-2' }}</span>
+          </div>
+        </div>
+        <div *ngIf="order.paymentData" class="payment-info">
+          <h4>Payment Information:</h4>
+          <div class="payment-details">
+            <p><strong>Name:</strong> {{ order.paymentData.name }}</p>
+            <p><strong>Phone:</strong> {{ order.paymentData.phoneNumber }}</p>
+            <p><strong>Payment Date:</strong> {{ order.paymentData.paymentDate | date:'medium' }}</p>
+            <p><strong>Payment Method:</strong> {{ order.paymentData.paymentMethod }}</p>
+            <p *ngIf="order.paymentData.notes"><strong>Notes:</strong> {{ order.paymentData.notes }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
