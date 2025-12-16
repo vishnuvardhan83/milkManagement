@@ -20,19 +20,13 @@ export class LoginComponent implements OnInit {
     private snackBar: MatSnackBar
   ) {
     this.loginForm = this.fb.group({
-      username: [''],
-      email: ['', [Validators.email]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
   }
 
   isFormValid(): boolean {
-    const username = this.loginForm.get('username')?.value;
-    const email = this.loginForm.get('email')?.value;
-    const password = this.loginForm.get('password')?.value;
-    
-    // Either username or email must be provided
-    return (username || email) && password;
+    return this.loginForm.valid;
   }
 
   ngOnInit(): void {
@@ -42,21 +36,46 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.isFormValid()) {
-      this.loading = true;
-      this.authService.login(this.loginForm.value).subscribe({
-        next: () => {
-          this.router.navigate(['/dashboard']);
-          this.loading = false;
-        },
-        error: (error) => {
-          const errorMessage = error.error?.error || 'Invalid username/email or password';
-          this.snackBar.open(errorMessage, 'Close', {
-            duration: 3000
-          });
-          this.loading = false;
-        }
-      });
+    if (!this.isFormValid()) {
+      return;
     }
+
+    const email = this.loginForm.get('email')?.value;
+    const password = this.loginForm.get('password')?.value;
+
+    // Backend expects username/password; we send email as username
+    const payload = {
+      username: email,
+      password: password
+    };
+
+    this.loading = true;
+    this.authService.login(payload as any).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard']);
+        this.loading = false;
+      },
+      error: (error) => {
+        const errorMessage = error.error?.error || 'Invalid email or password';
+        this.snackBar.open(errorMessage, 'Close', {
+          duration: 3000
+        });
+        this.loading = false;
+      }
+    });
+  }
+
+  useAdminDemo(): void {
+    this.loginForm.patchValue({
+      email: 'admin@example.com',
+      password: 'admin123'
+    });
+  }
+
+  useCustomerDemo(): void {
+    this.loginForm.patchValue({
+      email: 'customer@example.com',
+      password: 'customer123'
+    });
   }
 }

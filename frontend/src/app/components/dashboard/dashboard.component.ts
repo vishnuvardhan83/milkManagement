@@ -48,7 +48,10 @@ export class DashboardComponent implements OnInit {
   }
 
   loadDashboardStats(): void {
-    this.dashboardService.getDashboardStats().subscribe({
+    const from = this.formatDate(this.dateFromControl.value);
+    const to = this.formatDate(this.dateToControl.value);
+
+    this.dashboardService.getDashboardStats(from, to).subscribe({
       next: (data) => {
         this.stats = data;
         this.loading = false;
@@ -59,6 +62,18 @@ export class DashboardComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  private formatDate(value: any): string | null {
+    if (!value) {
+      return null;
+    }
+    const date = value instanceof Date ? value : new Date(value);
+    if (isNaN(date.getTime())) {
+      return null;
+    }
+    // Backend expects ISO date (yyyy-MM-dd)
+    return date.toISOString().substring(0, 10);
   }
 
   updateCharts(): void {
@@ -79,14 +94,12 @@ export class DashboardComponent implements OnInit {
   }
 
   applyDateFilter(): void {
-    // Reload dashboard stats with date range
-    // This would require backend support for date range filtering
     this.loadDashboardStats();
   }
 
   clearDateFilter(): void {
-    this.dateFromControl.setValue('');
-    this.dateToControl.setValue('');
+    this.dateFromControl.setValue(null);
+    this.dateToControl.setValue(null);
     this.loadDashboardStats();
   }
 

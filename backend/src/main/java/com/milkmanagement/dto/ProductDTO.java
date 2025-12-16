@@ -20,6 +20,9 @@ public class ProductDTO {
     
     private String type; // COW_MILK, BUFFALO_MILK, CURD, etc.
     
+    // Optional high-level category for UI (e.g., Dairy)
+    private String category;
+    
     @NotNull(message = "Quantity is required")
     @Positive(message = "Quantity must be positive")
     private BigDecimal quantity;
@@ -31,4 +34,10 @@ public class ProductDTO {
     private String unit;
     
     private String description;
+    
+    // Optional fields for richer product card / listing
+    @Positive(message = "Minimum order quantity must be positive")
+    private BigDecimal minOrderQuantity;
+    
+    private String imageUrl;
 }

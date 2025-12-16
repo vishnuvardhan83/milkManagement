@@ -13,6 +13,7 @@ export interface OrderItem {
 export interface Order {
   id?: number;
   customerId?: number;
+  userId?: number;
   items: OrderItem[];
   totalAmount: number;
   orderDate?: string;
@@ -40,5 +41,9 @@ export class OrderService {
 
   getCustomerOrders(customerId: number): Observable<Order[]> {
     return this.http.get<Order[]>(`${API_URL}/customer/${customerId}`);
+  }
+
+  getUserOrders(userId: number): Observable<Order[]> {
+    return this.http.get<Order[]>(`${API_URL}/user/${userId}`);
   }
 }

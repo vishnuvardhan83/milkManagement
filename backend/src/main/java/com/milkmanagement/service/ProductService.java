@@ -107,6 +107,9 @@ public class ProductService {
         product.setName(productDTO.getName());
         product.setUnit(productDTO.getUnit() != null ? productDTO.getUnit() : "LITRE");
         product.setDescription(productDTO.getDescription());
+        product.setCategory(productDTO.getCategory());
+        product.setMinOrderQuantity(productDTO.getMinOrderQuantity());
+        product.setImageUrl(productDTO.getImageUrl());
         
         Product savedProduct = productRepository.save(product);
         
@@ -152,6 +155,15 @@ public class ProductService {
         }
         if (productDTO.getDescription() != null) {
             product.setDescription(productDTO.getDescription());
+        }
+        if (productDTO.getCategory() != null) {
+            product.setCategory(productDTO.getCategory());
+        }
+        if (productDTO.getMinOrderQuantity() != null) {
+            product.setMinOrderQuantity(productDTO.getMinOrderQuantity());
+        }
+        if (productDTO.getImageUrl() != null) {
+            product.setImageUrl(productDTO.getImageUrl());
         }
         
         Product savedProduct = productRepository.save(product);
@@ -289,6 +301,9 @@ public class ProductService {
         dto.setName(product.getName());
         dto.setUnit(product.getUnit());
         dto.setDescription(product.getDescription());
+        dto.setCategory(product.getCategory());
+        dto.setMinOrderQuantity(product.getMinOrderQuantity());
+        dto.setImageUrl(product.getImageUrl());
         
         // Get stock quantity
         Stock stock = stockRepository.findByProductId(product.getId()).orElse(null);

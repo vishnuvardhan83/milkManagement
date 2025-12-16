@@ -46,6 +46,8 @@ import { RoleAssignmentComponent } from './components/user/role-assignment/role-
 import { CartComponent } from './components/cart/cart.component';
 import { OrderHistoryComponent } from './components/order/order-history/order-history.component';
 import { PaymentFormComponent } from './components/payment/payment-form/payment-form.component';
+import { InventoryComponent } from './components/inventory/inventory.component';
+import { ConfirmDialogComponent } from './components/shared/confirm-dialog.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { AuthService } from './services/auth.service';
 import { CustomerService } from './services/customer.service';
@@ -55,6 +57,7 @@ import { ProductService } from './services/product.service';
 import { PaymentService } from './services/payment.service';
 import { UserService } from './services/user.service';
 import { OrderService } from './services/order.service';
+import { InventoryService } from './services/inventory.service';
 
 @NgModule({
   declarations: [
@@ -73,7 +76,9 @@ import { OrderService } from './services/order.service';
     RoleAssignmentComponent,
     CartComponent,
     OrderHistoryComponent,
-    PaymentFormComponent
+    PaymentFormComponent,
+    InventoryComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -113,6 +118,7 @@ import { OrderService } from './services/order.service';
     PaymentService,
     UserService,
     OrderService,
+    InventoryService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

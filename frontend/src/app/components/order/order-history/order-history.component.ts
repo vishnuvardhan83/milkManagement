@@ -28,19 +28,16 @@ export class OrderHistoryComponent implements OnInit {
     const user = this.authService.getCurrentUser();
     if (user && user.id) {
       this.currentUserId = user.id;
-      // Try to get customer orders first, fallback to user orders
-      this.orderService.getCustomerOrders(user.id).subscribe({
+      this.orderService.getUserOrders(user.id).subscribe({
         next: (orders) => {
           this.orders = orders;
           this.loading = false;
         },
         error: (error) => {
-          console.error('Error loading orders:', error);
-          // If customer orders endpoint doesn't exist, try getting all orders
+          console.error('Error loading user orders:', error);
           this.orderService.getOrders().subscribe({
             next: (allOrders) => {
-              // Filter orders for current user
-              this.orders = allOrders.filter(order => order.customerId === user.id);
+              this.orders = allOrders.filter(order => order.userId === user.id);
               this.loading = false;
             },
             error: (err) => {

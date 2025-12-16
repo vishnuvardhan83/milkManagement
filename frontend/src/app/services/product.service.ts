@@ -13,6 +13,10 @@ export interface Product {
   pricePerUnit: number;
   unit: string;
   description?: string;
+  // Optional richer fields
+  category?: string;
+  minOrderQuantity?: number;
+  imageUrl?: string;
 }
 
 export interface ProductQuantity {

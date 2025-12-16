@@ -26,11 +26,13 @@ export class ProductFormComponent implements OnInit {
 
     this.productForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
+      description: [''],
       type: ['COW_MILK', Validators.required],
-      quantity: [0, [Validators.required, Validators.min(0)]],
-      pricePerUnit: [0, [Validators.required, Validators.min(0.01)]],
       unit: ['L', Validators.required],
-      description: ['']
+      pricePerUnit: [0, [Validators.required, Validators.min(0.01)]],
+      quantity: [0, [Validators.required, Validators.min(0)]],
+      minOrderQuantity: [1, [Validators.min(0.01)]],
+      imageUrl: ['']
     });
   }
 
@@ -38,11 +40,13 @@ export class ProductFormComponent implements OnInit {
     if (this.isEditMode && this.data.product) {
       this.productForm.patchValue({
         name: this.data.product.name,
+        description: this.data.product.description,
         type: this.data.product.type || 'COW_MILK',
         quantity: this.data.product.quantity,
         pricePerUnit: this.data.product.pricePerUnit,
         unit: this.data.product.unit || 'L',
-        description: ''
+        minOrderQuantity: this.data.product.minOrderQuantity || 1,
+        imageUrl: this.data.product.imageUrl || ''
       });
     }
   }
@@ -56,7 +60,9 @@ export class ProductFormComponent implements OnInit {
         quantity: formValue.quantity,
         pricePerUnit: formValue.pricePerUnit,
         unit: formValue.unit,
-        description: formValue.description
+        description: formValue.description,
+        minOrderQuantity: formValue.minOrderQuantity,
+        imageUrl: formValue.imageUrl
       };
 
       if (this.isEditMode && this.data.product?.id) {

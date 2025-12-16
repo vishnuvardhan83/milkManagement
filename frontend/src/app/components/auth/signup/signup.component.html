@@ -1,89 +1,86 @@
-<div class="signup-container">
-  <mat-card class="signup-card">
-    <mat-card-header>
-      <mat-card-title>Customer Sign Up</mat-card-title>
-      <mat-card-subtitle>Create your account to get started</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Username</mat-label>
-          <input matInput formControlName="username" required>
-          <mat-icon matPrefix>person</mat-icon>
-          <mat-error *ngIf="signupForm.get('username')?.hasError('required')">
-            Username is required
-          </mat-error>
-        </mat-form-field>
+<div class="signup-page">
+  <div class="signup-card">
+    <div class="brand-header">
+      <div class="brand-icon">
+        <mat-icon>local_drink</mat-icon>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">FreshDairy</span>
+      </div>
+    </div>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email" required>
-          <mat-icon matPrefix>email</mat-icon>
-          <mat-error *ngIf="signupForm.get('email')?.hasError('required')">
-            Email is required
-          </mat-error>
-          <mat-error *ngIf="signupForm.get('email')?.hasError('email')">
-            Please enter a valid email
-          </mat-error>
-        </mat-form-field>
+    <h1 class="title">Create Account</h1>
+    <p class="subtitle">Join us and start ordering fresh dairy</p>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
-          <input matInput type="password" formControlName="password" required>
-          <mat-icon matPrefix>lock</mat-icon>
-          <mat-error *ngIf="signupForm.get('password')?.hasError('required')">
-            Password is required
-          </mat-error>
-          <mat-error *ngIf="signupForm.get('password')?.hasError('minlength')">
-            Password must be at least 6 characters
-          </mat-error>
-        </mat-form-field>
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Full Name</mat-label>
+        <input matInput formControlName="name" placeholder="John Doe" required>
+        <mat-icon matPrefix>badge</mat-icon>
+        <mat-error *ngIf="signupForm.get('name')?.hasError('required')">
+          Name is required
+        </mat-error>
+      </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Full Name</mat-label>
-          <input matInput formControlName="name" required>
-          <mat-icon matPrefix>badge</mat-icon>
-          <mat-error *ngIf="signupForm.get('name')?.hasError('required')">
-            Name is required
-          </mat-error>
-        </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email Address</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="you@example.com" required>
+        <mat-icon matPrefix>email</mat-icon>
+        <mat-error *ngIf="signupForm.get('email')?.hasError('required')">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="signupForm.get('email')?.hasError('email')">
+          Please enter a valid email
+        </mat-error>
+      </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Mobile Number</mat-label>
-          <input matInput formControlName="mobileNumber" required>
-          <mat-icon matPrefix>phone</mat-icon>
-          <mat-error *ngIf="signupForm.get('mobileNumber')?.hasError('required')">
-            Mobile number is required
-          </mat-error>
-        </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" required>
+        <mat-icon matPrefix>lock</mat-icon>
+        <mat-error *ngIf="signupForm.get('password')?.hasError('required')">
+          Password is required
+        </mat-error>
+        <mat-error *ngIf="signupForm.get('password')?.hasError('minlength')">
+          Password must be at least 6 characters
+        </mat-error>
+      </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Address</mat-label>
-          <textarea matInput formControlName="address" rows="3"></textarea>
-          <mat-icon matPrefix>home</mat-icon>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Daily Milk Quantity (Liters)</mat-label>
-          <input matInput type="number" formControlName="dailyMilkQuantity" required>
-          <mat-icon matPrefix>local_drink</mat-icon>
-          <mat-error *ngIf="signupForm.get('dailyMilkQuantity')?.hasError('required')">
-            Daily milk quantity is required
-          </mat-error>
-          <mat-error *ngIf="signupForm.get('dailyMilkQuantity')?.hasError('min')">
-            Quantity must be 0 or greater
-          </mat-error>
-        </mat-form-field>
-
-        <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="loading || signupForm.invalid">
-          <span *ngIf="!loading">Sign Up</span>
-          <span *ngIf="loading">Creating Account...</span>
-        </button>
-
-        <div class="login-link">
-          <p>Already have an account? <a routerLink="/login">Login</a></p>
+      <div class="account-type-section">
+        <label class="account-type-label">Account Type</label>
+        <div class="account-type-toggle">
+          <button
+            type="button"
+            class="toggle-button"
+            [class.active]="signupForm.get('accountType')?.value === 'CUSTOMER'"
+            (click)="setAccountType('CUSTOMER')">
+            <mat-icon>person</mat-icon>
+            <span>Customer</span>
+          </button>
+          <button
+            type="button"
+            class="toggle-button"
+            [class.active]="signupForm.get('accountType')?.value === 'ADMIN'"
+            (click)="setAccountType('ADMIN')">
+            <mat-icon>supervisor_account</mat-icon>
+            <span>Admin</span>
+          </button>
         </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+      </div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="primary-button"
+        [disabled]="loading || signupForm.invalid">
+        <span *ngIf="!loading">Create Account</span>
+        <span *ngIf="loading">Creating Account...</span>
+      </button>
+    </form>
+
+    <div class="login-link">
+      <p>Already have an account? <a routerLink="/login">Sign in</a></p>
+    </div>
+  </div>
 </div>

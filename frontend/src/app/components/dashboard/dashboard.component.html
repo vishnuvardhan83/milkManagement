@@ -1,105 +1,120 @@
-<div class="dashboard-content">
-  <h1>Dashboard</h1>
-
-  <!-- Date Range Filter Toolbar -->
-  <div class="search-filter-toolbar">
-    <div class="toolbar-left">
-      <span class="display-count">Dashboard Statistics</span>
+<div class="dashboard-page">
+  <!-- Top header -->
+  <div class="dashboard-header">
+    <div>
+      <h1 class="dashboard-title">Admin Dashboard</h1>
+      <p class="dashboard-subtitle">Welcome back</p>
     </div>
-    <div class="toolbar-center">
-      <mat-form-field appearance="outline" class="compact-filter-field">
-        <mat-label>Date From</mat-label>
-        <input matInput [matDatepicker]="pickerFrom" [formControl]="dateFromControl" placeholder="From">
+
+    <!-- Simple date range filter, compact on the right -->
+    <div class="header-filters">
+      <mat-form-field appearance="outline" class="header-date-field">
+        <mat-label>From</mat-label>
+        <input matInput [matDatepicker]="pickerFrom" [formControl]="dateFromControl">
         <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
         <mat-datepicker #pickerFrom></mat-datepicker>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="compact-filter-field">
-        <mat-label>Date To</mat-label>
-        <input matInput [matDatepicker]="pickerTo" [formControl]="dateToControl" placeholder="To">
+      <mat-form-field appearance="outline" class="header-date-field">
+        <mat-label>To</mat-label>
+        <input matInput [matDatepicker]="pickerTo" [formControl]="dateToControl">
         <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
         <mat-datepicker #pickerTo></mat-datepicker>
       </mat-form-field>
-    </div>
-    <div class="toolbar-right">
-      <button mat-icon-button (click)="applyDateFilter()" matTooltip="Apply Filter">
-        <mat-icon>filter_list</mat-icon>
+
+      <button mat-icon-button color="primary" (click)="applyDateFilter()" matTooltip="Apply Filter">
+        <mat-icon>filter_alt</mat-icon>
       </button>
       <button mat-icon-button (click)="clearDateFilter()" matTooltip="Clear">
-        <mat-icon>clear</mat-icon>
-      </button>
-      <button mat-icon-button (click)="loadDashboardStats()" matTooltip="Refresh">
         <mat-icon>refresh</mat-icon>
       </button>
     </div>
   </div>
 
-          <div *ngIf="loading" class="loading">
-            <mat-spinner diameter="50"></mat-spinner>
-          </div>
+  <div *ngIf="loading" class="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
 
-          <div *ngIf="!loading && stats" class="stats-grid">
-            <mat-card class="stat-card">
-              <mat-card-header>
-                <mat-card-title>Total Customers</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <div class="stat-value">{{ stats.totalCustomers }}</div>
-                <div class="stat-label">Active: {{ stats.activeCustomers }}</div>
-              </mat-card-content>
-            </mat-card>
-
-            <mat-card class="stat-card">
-              <mat-card-header>
-                <mat-card-title>Today's Delivery</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <div class="stat-value">{{ stats.totalMilkDeliveredToday | number:'1.2-2' }} L</div>
-              </mat-card-content>
-            </mat-card>
-
-            <mat-card class="stat-card">
-              <mat-card-header>
-                <mat-card-title>Today's Revenue</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <div class="stat-value">₹{{ stats.totalRevenueToday | number:'1.2-2' }}</div>
-              </mat-card-content>
-            </mat-card>
-
-            <mat-card class="stat-card">
-              <mat-card-header>
-                <mat-card-title>Monthly Revenue</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <div class="stat-value">₹{{ stats.totalRevenueThisMonth | number:'1.2-2' }}</div>
-              </mat-card-content>
-            </mat-card>
-
-            <mat-card class="stat-card">
-              <mat-card-header>
-                <mat-card-title>Pending Payments</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <div class="stat-value">₹{{ stats.pendingPayments | number:'1.2-2' }}</div>
-                <div class="stat-label">{{ stats.pendingInvoices }} invoices</div>
-              </mat-card-content>
-            </mat-card>
-          </div>
-
-          <div *ngIf="!loading && stats" class="chart-container">
-            <mat-card>
-              <mat-card-header>
-                <mat-card-title>Revenue Chart</mat-card-title>
-              </mat-card-header>
-              <mat-card-content>
-                <canvas baseChart
-                  [data]="revenueChartData"
-                  [options]="revenueChartOptions"
-                  [type]="revenueChartType"
-                  *ngIf="!loading">
-                </canvas>
-              </mat-card-content>
-            </mat-card>
-          </div>
+  <ng-container *ngIf="!loading && stats">
+    <!-- Top summary cards row -->
+    <div class="summary-row">
+      <mat-card class="summary-card revenue-card">
+        <div class="summary-icon">
+          <mat-icon>payments</mat-icon>
         </div>
+        <div class="summary-content">
+          <div class="summary-label">Total Revenue</div>
+          <div class="summary-value">₹{{ stats.totalRevenueThisMonth | number:'1.2-2' }}</div>
+          <div class="summary-subtext">Today: ₹{{ stats.totalRevenueToday | number:'1.2-2' }}</div>
+        </div>
+      </mat-card>
+
+      <mat-card class="summary-card orders-card">
+        <div class="summary-icon">
+          <mat-icon>inventory_2</mat-icon>
+        </div>
+        <div class="summary-content">
+          <div class="summary-label">Total Customers</div>
+          <div class="summary-value">{{ stats.totalCustomers }}</div>
+          <div class="summary-subtext">Active: {{ stats.activeCustomers }}</div>
+        </div>
+      </mat-card>
+
+      <mat-card class="summary-card milk-card">
+        <div class="summary-icon">
+          <mat-icon>local_drink</mat-icon>
+        </div>
+        <div class="summary-content">
+          <div class="summary-label">Milk Sold Today</div>
+          <div class="summary-value">{{ stats.totalMilkDeliveredToday | number:'1.2-2' }}L</div>
+          <div class="summary-subtext">All time stats coming soon</div>
+        </div>
+      </mat-card>
+
+      <mat-card class="summary-card pending-card">
+        <div class="summary-icon">
+          <mat-icon>schedule</mat-icon>
+        </div>
+        <div class="summary-content">
+          <div class="summary-label">Pending Payments</div>
+          <div class="summary-value">₹{{ stats.pendingPayments | number:'1.2-2' }}</div>
+          <div class="summary-subtext">{{ stats.pendingInvoices }} invoices</div>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Inventory status big card -->
+    <mat-card class="inventory-card">
+      <div class="inventory-header">
+        <h2>Today's Inventory Status</h2>
+      </div>
+      <div class="inventory-body">
+        <div class="inventory-item">
+          <div class="inventory-label">Total Received</div>
+          <div class="inventory-value">100L</div>
+        </div>
+        <div class="inventory-item">
+          <div class="inventory-label">Available Now</div>
+          <div class="inventory-value">100.0L</div>
+          <div class="inventory-subtext">100% remaining</div>
+        </div>
+        <div class="inventory-item">
+          <div class="inventory-label">Price per Liter</div>
+          <div class="inventory-value">₹55.5</div>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- Recent orders / activity placeholder -->
+    <div class="recent-section">
+      <h2>Recent Orders</h2>
+      <mat-card class="recent-card">
+        <div class="recent-empty">
+          <mat-icon>shopping_bag</mat-icon>
+          <p>No recent orders yet</p>
+          <span class="recent-hint">New orders will appear here as soon as they are created.</span>
+        </div>
+      </mat-card>
+    </div>
+  </ng-container>
+</div>

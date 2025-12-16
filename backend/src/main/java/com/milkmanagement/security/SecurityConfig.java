@@ -66,6 +66,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/payments/**").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers("/api/invoices/**").hasAnyRole("ADMIN", "MANAGER", "CUSTOMER")
                 .requestMatchers("/api/orders/**").authenticated() // All authenticated users can access orders
+                .requestMatchers("/api/inventory/**").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers("/api/products").authenticated() // All authenticated users can view/search
                 .requestMatchers("/api/products/count").authenticated()
                 .requestMatchers("/api/products/quantities").authenticated() // All authenticated users can view quantities

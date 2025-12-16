@@ -6,36 +6,36 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "products")
+@Table(name = "inventory_entries")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class InventoryEntry {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "name", unique = true, nullable = false, length = 100)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
     
-    @Column(name = "unit", length = 20)
-    private String unit = "LITRE";
+    @Column(name = "entry_date", nullable = false)
+    private LocalDate entryDate;
     
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
+    @Column(name = "total_liters_received", nullable = false, precision = 10, scale = 2)
+    private BigDecimal totalLitersReceived;
     
-    @Column(name = "category", length = 50)
-    private String category;
+    @Column(name = "price_per_litre", nullable = false, precision = 10, scale = 2)
+    private BigDecimal pricePerLitre;
     
-    @Column(name = "min_order_quantity", precision = 10, scale = 2)
-    private BigDecimal minOrderQuantity;
-    
-    @Column(name = "image_url", length = 255)
-    private String imageUrl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -54,3 +54,4 @@ public class Product {
         updatedAt = LocalDateTime.now();
     }
 }
+

@@ -16,9 +16,15 @@ public class DashboardController {
     private DashboardService dashboardService;
     
     @GetMapping("/stats")
-    public ResponseEntity<DashboardStatsDTO> getDashboardStats() {
+    public ResponseEntity<DashboardStatsDTO> getDashboardStats(
+            @RequestParam(required = false)
+            @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE)
+            java.time.LocalDate fromDate,
+            @RequestParam(required = false)
+            @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE)
+            java.time.LocalDate toDate) {
         try {
-            DashboardStatsDTO stats = dashboardService.getDashboardStats();
+            DashboardStatsDTO stats = dashboardService.getDashboardStats(fromDate, toDate);
             return ResponseEntity.ok(stats);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

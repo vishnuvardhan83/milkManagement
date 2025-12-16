@@ -20,13 +20,14 @@ export class SignupComponent implements OnInit {
     private snackBar: MatSnackBar
   ) {
     this.signupForm = this.fb.group({
-      username: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
       email: ['', [Validators.required, Validators.email]],
       name: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      accountType: ['CUSTOMER', [Validators.required]],
+      username: [''],
       address: [''],
-      mobileNumber: ['', [Validators.required]],
-      dailyMilkQuantity: ['', [Validators.required, Validators.min(0)]]
+      mobileNumber: [''],
+      dailyMilkQuantity: ['']
     });
   }
 
@@ -36,10 +37,21 @@ export class SignupComponent implements OnInit {
     }
   }
 
+  setAccountType(type: 'CUSTOMER' | 'ADMIN'): void {
+    this.signupForm.patchValue({ accountType: type });
+  }
+
   onSubmit(): void {
     if (this.signupForm.valid) {
       this.loading = true;
-      this.authService.signup(this.signupForm.value).subscribe({
+
+      const formValue = this.signupForm.value;
+      const payload = {
+        ...formValue,
+        username: formValue.email // backend expects username; use email as username
+      };
+
+      this.authService.signup(payload as any).subscribe({
         next: (response) => {
           this.snackBar.open('Account created successfully! Please login.', 'Close', {
             duration: 3000

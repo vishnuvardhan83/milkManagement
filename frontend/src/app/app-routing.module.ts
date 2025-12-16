@@ -9,12 +9,14 @@ import { PaymentListComponent } from './components/payment/payment-list/payment-
 import { UserListComponent } from './components/user/user-list/user-list.component';
 import { CartComponent } from './components/cart/cart.component';
 import { OrderHistoryComponent } from './components/order/order-history/order-history.component';
+import { InventoryComponent } from './components/inventory/inventory.component';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   { path: 'login', component: AuthComponent },
   { path: 'signup', component: AuthComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'inventory', component: InventoryComponent, canActivate: [AuthGuard] },
   { path: 'customers', component: CustomerListComponent, canActivate: [AuthGuard] },
   { path: 'deliveries', component: DeliveryListComponent, canActivate: [AuthGuard] },
   { path: 'products', component: ProductListComponent, canActivate: [AuthGuard] },

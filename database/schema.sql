@@ -92,6 +92,22 @@ CREATE TABLE stock (
     INDEX idx_product (product_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Inventory entries table (tracks inventory updates/history)
+CREATE TABLE inventory_entries (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    product_id BIGINT NOT NULL,
+    entry_date DATE NOT NULL,
+    total_liters_received DECIMAL(10, 2) NOT NULL,
+    price_per_litre DECIMAL(10, 2) NOT NULL,
+    created_by BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
+    INDEX idx_product (product_id),
+    INDEX idx_entry_date (entry_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Milk deliveries table
 CREATE TABLE milk_deliveries (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,

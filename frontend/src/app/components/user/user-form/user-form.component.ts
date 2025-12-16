@@ -57,29 +57,30 @@ export class UserFormComponent implements OnInit {
           roles: formValue.roles,
           enabled: formValue.enabled
         };
-        
-        if (formValue.password) {
-          // If password is provided, include it in update
-          this.userService.updateUser(this.data.user.id, updateData).subscribe({
-            next: () => {
-              this.snackBar.open('User updated successfully', 'Close', { duration: 3000 });
-              this.dialogRef.close(true);
-            },
-            error: (error) => {
-              this.snackBar.open('Error updating user', 'Close', { duration: 3000 });
+
+        const userId = this.data.user.id;
+
+        const handleSuccess = () => {
+          this.snackBar.open('User updated successfully', 'Close', { duration: 3000 });
+          this.dialogRef.close(true);
+        };
+
+        const handleError = () => {
+          this.snackBar.open('Error updating user', 'Close', { duration: 3000 });
+        };
+        this.userService.updateUser(userId, updateData).subscribe({
+          next: () => {
+            if (formValue.password) {
+              this.userService.updateUserPassword(userId, formValue.password).subscribe({
+                next: () => handleSuccess(),
+                error: () => handleError()
+              });
+            } else {
+              handleSuccess();
             }
-          });
-        } else {
-          this.userService.updateUser(this.data.user.id, updateData).subscribe({
-            next: () => {
-              this.snackBar.open('User updated successfully', 'Close', { duration: 3000 });
-              this.dialogRef.close(true);
-            },
-            error: (error) => {
-              this.snackBar.open('Error updating user', 'Close', { duration: 3000 });
-            }
-          });
-        }
+          },
+          error: () => handleError()
+        });
       } else {
         const newUser: CreateUserRequest = {
           username: formValue.username,
