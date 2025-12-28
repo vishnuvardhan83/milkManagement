@@ -1,13 +1,37 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCardModule } from '@angular/material/card';
 import { CustomerService, Customer } from '../../../services/customer.service';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { CustomerFormComponent } from '../customer-form/customer-form.component';
-import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-customer-list',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatProgressSpinnerModule,
+    MatCardModule
+  ],
   templateUrl: './customer-list.component.html',
   styleUrls: ['./customer-list.component.scss']
 })
@@ -18,7 +42,6 @@ export class CustomerListComponent implements OnInit {
   displayedColumns: string[] = ['name', 'mobileNumber', 'email', 'dailyMilkQuantity', 'milkType', 'deliveryStatus', 'actions'];
   loading = false;
   
-  // Search and filter controls
   searchControl = new FormControl('');
   filterNameControl = new FormControl('');
   filterStatusControl = new FormControl('');
@@ -34,7 +57,6 @@ export class CustomerListComponent implements OnInit {
   ngOnInit(): void {
     this.loadCustomers();
     
-    // Setup search with debounce
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -42,7 +64,6 @@ export class CustomerListComponent implements OnInit {
       this.applyFilters();
     });
 
-    // Setup filter changes
     this.filterNameControl.valueChanges.subscribe(() => this.applyFilters());
     this.filterStatusControl.valueChanges.subscribe(() => this.applyFilters());
     this.filterMilkTypeControl.valueChanges.subscribe(() => this.applyFilters());
@@ -72,7 +93,6 @@ export class CustomerListComponent implements OnInit {
     const filterStatus = this.filterStatusControl.value || '';
     const filterMilkType = this.filterMilkTypeControl.value || '';
 
-    // Apply search
     if (searchTerm) {
       filtered = filtered.filter(c => 
         c.name.toLowerCase().includes(searchTerm) ||
@@ -81,17 +101,14 @@ export class CustomerListComponent implements OnInit {
       );
     }
 
-    // Apply name filter
     if (filterName) {
       filtered = filtered.filter(c => c.name.toLowerCase().includes(filterName));
     }
 
-    // Apply status filter
     if (filterStatus) {
       filtered = filtered.filter(c => (c.deliveryStatus || 'ACTIVE') === filterStatus);
     }
 
-    // Apply milk type filter
     if (filterMilkType) {
       filtered = filtered.filter(c => (c.milkType || 'COW') === filterMilkType);
     }

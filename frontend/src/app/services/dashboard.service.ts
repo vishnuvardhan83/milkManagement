@@ -14,6 +14,20 @@ export interface DashboardStats {
   pendingInvoices: number;
 }
 
+export interface ProfitLoss {
+  startDate: string;
+  endDate: string;
+  totalRevenue: number;
+  totalMilkSales: number;
+  totalExpenses: number;
+  totalSalaries: number;
+  totalCosts: number;
+  netProfit: number;
+  profitMargin: number;
+  totalAnimals: number;
+  averageDailyMilk: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -30,5 +44,12 @@ export class DashboardService {
       params = params.set('toDate', toDate);
     }
     return this.http.get<DashboardStats>(`${API_URL}/stats`, { params });
+  }
+
+  getProfitLoss(startDate?: string, endDate?: string): Observable<ProfitLoss> {
+    let params = new HttpParams();
+    if (startDate) params = params.set('startDate', startDate);
+    if (endDate) params = params.set('endDate', endDate);
+    return this.http.get<ProfitLoss>(`${API_URL}/profit-loss`, { params });
   }
 }

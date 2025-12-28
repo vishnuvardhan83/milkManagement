@@ -1,13 +1,43 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { InventoryService, InventoryStatus, InventoryEntry } from '../../services/inventory.service';
 import { ProductService, Product } from '../../services/product.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../shared/confirm-dialog.component';
 
 @Component({
   selector: 'app-inventory',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatTableModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    MatDialogModule,
+    MatTooltipModule
+  ],
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.scss']
 })
@@ -108,7 +138,6 @@ export class InventoryComponent implements OnInit {
     };
 
     if (this.editingEntry) {
-      // Update existing entry
       this.inventoryService.updateInventoryEntry(this.editingEntry.id, payload).subscribe({
         next: () => {
           this.snackBar.open('Inventory entry updated successfully', 'Close', { duration: 3000 });
@@ -123,7 +152,6 @@ export class InventoryComponent implements OnInit {
         }
       });
     } else {
-      // Create new entry
       this.inventoryService.updateInventory(payload).subscribe({
         next: () => {
           this.snackBar.open('Inventory updated successfully', 'Close', { duration: 3000 });
@@ -151,7 +179,6 @@ export class InventoryComponent implements OnInit {
     });
     this.selectedProductId = entry.productId;
     this.loadStatus();
-    // Scroll to form
     document.querySelector('.update-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
@@ -201,7 +228,6 @@ export class InventoryComponent implements OnInit {
   }
 
   openAddProductDialog(): void {
-    // Import and open product form dialog
     import('../product/product-form/product-form.component').then(module => {
       const dialogRef = this.dialog.open(module.ProductFormComponent, {
         width: '600px',
@@ -215,7 +241,6 @@ export class InventoryComponent implements OnInit {
         }
       });
     }).catch(() => {
-      // Fallback: navigate to product form or show message
       this.snackBar.open('Please use the Products page to add new products', 'Close', { duration: 3000 });
     });
   }

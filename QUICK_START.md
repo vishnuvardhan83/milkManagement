@@ -1,92 +1,94 @@
-# Quick Start Guide
+# 🚀 Quick Start Guide
 
-## Why the Application Stops
+## ⚠️ Current Issue: Database Password Not Set
 
-The Spring Boot application **stops immediately** when it cannot connect to the MySQL database. This is expected behavior - Spring Boot fails to start if database connection fails during initialization.
+The backend is stopping because MySQL requires a password. Here's how to fix it:
 
-## Fix Database Connection
+## ✅ Solution 1: Use the Startup Script (Easiest)
 
-The error shows: `Access denied for user 'root'@'localhost' (using password: NO)`
+```bash
+cd backend
+./start-backend.sh your_mysql_password
+```
 
-This means your MySQL password is not set. You have two options:
+## ✅ Solution 2: Set Environment Variable
 
-### Option 1: Set Password in application.properties (Quick Fix)
+```bash
+# Set your MySQL password
+export DB_PASSWORD=your_mysql_password
 
-Edit `backend/src/main/resources/application.properties` and change:
+# Start backend
+cd backend
+mvn spring-boot:run
+```
+
+## ✅ Solution 3: Edit application.properties Directly
+
+Edit `backend/src/main/resources/application.properties`:
+
 ```properties
-spring.datasource.password=${DB_PASSWORD:root}
-```
-Replace `root` with your actual MySQL password.
-
-### Option 2: Use Environment Variable (Recommended)
-
-Set the password as an environment variable before starting:
-```bash
-export DB_PASSWORD=your_mysql_password_here
-cd backend
-mvn spring-boot:run
+spring.datasource.password=your_mysql_password
 ```
 
-## Start the Services
-
-### 1. Start Backend (Terminal 1)
+Then start:
 ```bash
 cd backend
 mvn spring-boot:run
 ```
 
-Or use the run script:
-```bash
-cd backend
-./run.sh
-```
+## 🔍 Check MySQL Status
 
-### 2. Start Frontend (Terminal 2)
-```bash
-# First time: Install dependencies
-cd frontend
-npm install
-
-# Install Angular CLI if not installed
-npm install -g @angular/cli
-
-# Start the frontend
-ng serve
-```
-
-Or use the startup script:
-```bash
-./start-frontend.sh
-```
-
-## Verify MySQL is Running
-
-Make sure MySQL is running:
 ```bash
 # Check if MySQL is running
-mysql.server status
+brew services list | grep mysql
 
-# If not running, start it
-mysql.server start
+# Start MySQL if not running
+brew services start mysql
+
+# Test connection
+mysql -u root -p
 ```
 
-## Access the Application
+## 📝 Complete Setup Steps
 
-- **Backend API**: http://localhost:8080
-- **Frontend UI**: http://localhost:4200
+1. **Set MySQL Password:**
+   ```bash
+   export DB_PASSWORD=your_password
+   ```
 
-## Troubleshooting
+2. **Start Backend:**
+   ```bash
+   cd backend
+   mvn spring-boot:run
+   ```
 
-### If MySQL password is wrong:
-1. Check your MySQL password: `mysql -u root -p`
-2. Update `application.properties` with the correct password
-3. Restart the backend
+3. **Start Frontend (in another terminal):**
+   ```bash
+   cd frontend
+   npm install --legacy-peer-deps
+   ng serve
+   ```
 
-### If Angular CLI not found:
-```bash
-npm install -g @angular/cli
-```
+4. **Access Application:**
+   - Frontend: http://localhost:4200
+   - Backend API: http://localhost:8080
+   - Swagger UI: http://localhost:8080/swagger-ui.html
 
-### If port 8080 or 4200 is already in use:
-- Change backend port in `application.properties`: `server.port=8081`
-- Change frontend port: `ng serve --port 4201`
+## 🐛 Troubleshooting
+
+### MySQL Connection Error
+- Make sure MySQL is running: `brew services start mysql`
+- Verify password is correct
+- Check if MySQL allows passwordless login (not recommended)
+
+### Port Already in Use
+- Backend (8080): Change `server.port` in `application.properties`
+- Frontend (4200): Use `ng serve --port 4201`
+
+### Database Not Created
+- The app will auto-create the database if `createDatabaseIfNotExist=true` is in the URL
+- Make sure MySQL user has CREATE DATABASE permission
+
+## 📚 More Help
+
+See `BACKEND_SETUP_FIX.md` for detailed database setup instructions.

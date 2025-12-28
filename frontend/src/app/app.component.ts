@@ -1,28 +1,44 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSidenav } from '@angular/material/sidenav';
-import { Router, NavigationEnd } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
+import { MatSidenavModule, MatSidenav } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { AuthService } from './services/auth.service';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatListModule,
+    MatMenuModule
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'Milk Management System';
+  title = 'Dairy Farm ERP';
   @ViewChild('sidenav') sidenav!: MatSidenav;
   sidenavOpened = false;
   private hoverTimeout: any;
   private leaveTimeout: any;
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    // Close sidenav after navigation
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
@@ -35,11 +51,11 @@ export class AppComponent implements OnInit {
   }
 
   isAdmin(): boolean {
-    return this.authService.hasRole('ADMIN') || this.authService.hasRole('ROLE_ADMIN');
+    return this.authService.hasRole('ROLE_ADMIN') || this.authService.hasRole('ROLE_FARM_ADMIN');
   }
 
   isCustomer(): boolean {
-    return this.authService.hasRole('CUSTOMER') || this.authService.hasRole('ROLE_CUSTOMER');
+    return this.authService.hasRole('ROLE_CUSTOMER');
   }
 
   onSidenavHover(): void {
@@ -53,7 +69,6 @@ export class AppComponent implements OnInit {
   }
 
   onSidenavLeave(): void {
-    // Delay closing to allow moving to content
     if (this.leaveTimeout) {
       clearTimeout(this.leaveTimeout);
     }

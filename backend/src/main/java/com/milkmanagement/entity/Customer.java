@@ -34,6 +34,9 @@ public class Customer {
     @Column(name = "daily_milk_quantity", nullable = false, precision = 10, scale = 2)
     private BigDecimal dailyMilkQuantity = BigDecimal.ZERO;
     
+    @Column(name = "balance", precision = 10, scale = 2)
+    private BigDecimal balance = BigDecimal.ZERO;
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "milk_type", length = 10)
     private MilkType milkType = MilkType.COW;

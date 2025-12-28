@@ -36,5 +36,7 @@ public class CustomerDTO {
     
     private Customer.DeliveryStatus deliveryStatus;
     
+    private BigDecimal balance;
+    
     private Long createdById;
 }

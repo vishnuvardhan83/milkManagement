@@ -1,15 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthService, SignupRequest } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-signup',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSnackBarModule
+  ],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent {
   signupForm: FormGroup;
   loading = false;
 
@@ -20,51 +36,32 @@ export class SignupComponent implements OnInit {
     private snackBar: MatSnackBar
   ) {
     this.signupForm = this.fb.group({
+      username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      name: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      accountType: ['CUSTOMER', [Validators.required]],
-      username: [''],
-      address: [''],
-      mobileNumber: [''],
-      dailyMilkQuantity: ['']
+      fullName: [''],
+      phone: ['']
     });
-  }
-
-  ngOnInit(): void {
-    if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/dashboard']);
-    }
-  }
-
-  setAccountType(type: 'CUSTOMER' | 'ADMIN'): void {
-    this.signupForm.patchValue({ accountType: type });
   }
 
   onSubmit(): void {
     if (this.signupForm.valid) {
       this.loading = true;
-
-      const formValue = this.signupForm.value;
-      const payload = {
-        ...formValue,
-        username: formValue.email // backend expects username; use email as username
+      const signupRequest: SignupRequest = {
+        ...this.signupForm.value,
+        role: 'ROLE_CUSTOMER'
       };
-
-      this.authService.signup(payload as any).subscribe({
+      
+      this.authService.signup(signupRequest).subscribe({
         next: (response) => {
-          this.snackBar.open('Account created successfully! Please login.', 'Close', {
-            duration: 3000
-          });
           this.loading = false;
+          this.snackBar.open('Registration successful! Please login.', 'Close', { duration: 3000 });
           this.router.navigate(['/login']);
         },
         error: (error) => {
-          const errorMessage = error.error?.error || error.error || 'Failed to create account';
-          this.snackBar.open(errorMessage, 'Close', {
-            duration: 5000
-          });
           this.loading = false;
+          this.snackBar.open('Registration failed. Please try again.', 'Close', { duration: 5000 });
+          console.error('Signup error:', error);
         }
       });
     }

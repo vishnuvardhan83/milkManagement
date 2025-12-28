@@ -1,9 +1,12 @@
 package com.milkmanagement.service;
 
+import com.milkmanagement.dto.CustomerBalanceDTO;
 import com.milkmanagement.dto.CustomerDTO;
 import com.milkmanagement.entity.Customer;
+import com.milkmanagement.entity.Receipt;
 import com.milkmanagement.entity.User;
 import com.milkmanagement.repository.CustomerRepository;
+import com.milkmanagement.repository.ReceiptRepository;
 import com.milkmanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -11,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +26,9 @@ public class CustomerService {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private ReceiptRepository receiptRepository;
     
     @Transactional(readOnly = true)
     public List<CustomerDTO> getAllCustomers() {
@@ -88,6 +95,30 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
     
+    @Transactional(readOnly = true)
+    public List<CustomerBalanceDTO> getCustomersWithPendingAmounts() {
+        return customerRepository.findAll().stream()
+                .map(customer -> {
+                    BigDecimal pending = receiptRepository.getTotalPendingAmountByCustomer(customer);
+                    if (pending == null) pending = BigDecimal.ZERO;
+                    
+                    Long pendingCount = receiptRepository.findByCustomer(customer).stream()
+                            .filter(r -> r.getPaymentStatus() != Receipt.PaymentStatus.PAID)
+                            .count();
+                    
+                    CustomerBalanceDTO dto = new CustomerBalanceDTO();
+                    dto.setCustomerId(customer.getId());
+                    dto.setCustomerName(customer.getName());
+                    dto.setMobileNumber(customer.getMobileNumber());
+                    dto.setEmail(customer.getEmail());
+                    dto.setTotalPendingAmount(pending);
+                    dto.setPendingReceiptsCount(pendingCount);
+                    return dto;
+                })
+                .filter(dto -> dto.getTotalPendingAmount().compareTo(BigDecimal.ZERO) > 0)
+                .collect(Collectors.toList());
+    }
+    
     private CustomerDTO convertToDTO(Customer customer) {
         CustomerDTO dto = new CustomerDTO();
         dto.setId(customer.getId());
@@ -98,6 +129,7 @@ public class CustomerService {
         dto.setDailyMilkQuantity(customer.getDailyMilkQuantity());
         dto.setMilkType(customer.getMilkType());
         dto.setDeliveryStatus(customer.getDeliveryStatus());
+        dto.setBalance(customer.getBalance());
         if (customer.getCreatedBy() != null) {
             dto.setCreatedById(customer.getCreatedBy().getId());
         }

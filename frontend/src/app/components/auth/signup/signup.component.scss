@@ -1,166 +1,65 @@
-.signup-page {
-  min-height: 100vh;
+.signup-container {
   display: flex;
-  align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at top left, #e0f2fe, #f9fafb 40%, #ecfeff 100%);
-  padding: 16px;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%);
+  padding: 20px;
 }
 
 .signup-card {
   width: 100%;
-  max-width: 480px;
-  background: #ffffff;
-  border-radius: 24px;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
-  padding: 32px 32px 24px;
-  box-sizing: border-box;
+  max-width: 450px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-.brand-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
+mat-card-header {
+  text-align: center;
+  padding: 20px 0;
 }
 
-.brand-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #0ea5e9, #22c55e);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
+mat-card-title {
+  font-size: 28px;
+  color: #2E7D32;
+  font-weight: bold;
 }
 
-.brand-icon mat-icon {
-  font-size: 22px;
+mat-card-subtitle {
+  color: #666;
+  margin-top: 8px;
 }
 
-.brand-name {
-  font-size: 20px;
-  font-weight: 700;
-  color: #0f172a;
-}
-
-.title {
-  margin: 8px 0 4px;
-  font-size: 24px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.subtitle {
-  margin: 0 0 20px;
-  font-size: 14px;
-  color: #6b7280;
-}
-
-.signup-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+mat-card-content {
+  padding: 20px;
 }
 
 .full-width {
   width: 100%;
+  margin-bottom: 16px;
 }
 
-.primary-button {
-  width: 100%;
-  margin-top: 8px;
-  height: 44px;
-  font-size: 15px;
-  font-weight: 600;
-  color: #ffffff;
-  background: linear-gradient(135deg, #0ea5e9, #22c55e);
-}
-
-.primary-button[disabled] {
-  opacity: 0.7;
-}
-
-.account-type-section {
-  margin-top: 4px;
-}
-
-.account-type-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: #4b5563;
-  margin-bottom: 6px;
-}
-
-.account-type-toggle {
-  display: flex;
-  gap: 8px;
-}
-
-.toggle-button {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  height: 40px;
-  border-radius: 999px;
-  border: 1px solid #e5e7eb;
-  background: #ffffff;
-  color: #4b5563;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.toggle-button mat-icon {
-  font-size: 18px;
-}
-
-.toggle-button.active {
-  border-color: #2563eb;
-  background: #eff6ff;
-  color: #1d4ed8;
-  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.15);
+mat-card-footer {
+  text-align: center;
+  padding: 20px;
 }
 
 .login-link {
-  text-align: center;
-  margin-top: 16px;
-
-  p {
-    margin: 0;
-    color: #4b5563;
-
-    a {
-      color: #2563eb;
-      text-decoration: none;
-      font-weight: 500;
-
-      &:hover {
-        text-decoration: underline;
-      }
+  margin: 0;
+  color: #666;
+  
+  a {
+    color: #2E7D32;
+    text-decoration: none;
+    font-weight: 500;
+    
+    &:hover {
+      text-decoration: underline;
     }
   }
 }
 
-textarea {
-  resize: vertical;
-}
-
-@media (max-width: 480px) {
-  .signup-card {
-    padding: 24px 20px 20px;
-  }
-
-  .brand-name {
-    font-size: 18px;
-  }
-
-  .title {
-    font-size: 22px;
-  }
+button[type="submit"] {
+  margin-top: 10px;
+  height: 48px;
+  font-size: 16px;
 }

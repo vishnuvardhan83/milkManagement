@@ -1,12 +1,37 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DashboardService, DashboardStats } from '../../services/dashboard.service';
 import { AuthService } from '../../services/auth.service';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
-import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-dashboard',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatTooltipModule
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -14,11 +39,9 @@ export class DashboardComponent implements OnInit {
   stats: DashboardStats | null = null;
   loading = true;
   
-  // Date range filters for dashboard
   dateFromControl = new FormControl('');
   dateToControl = new FormControl('');
 
-  // Chart configurations
   revenueChartData: ChartData<'line'> = {
     labels: [],
     datasets: []
@@ -72,7 +95,6 @@ export class DashboardComponent implements OnInit {
     if (isNaN(date.getTime())) {
       return null;
     }
-    // Backend expects ISO date (yyyy-MM-dd)
     return date.toISOString().substring(0, 10);
   }
 
@@ -102,5 +124,4 @@ export class DashboardComponent implements OnInit {
     this.dateToControl.setValue(null);
     this.loadDashboardStats();
   }
-
 }

@@ -3,23 +3,28 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
-const API_URL = 'http://localhost:8080/api/auth';
+const API_URL = `${environment.apiUrl}/auth`;
 
 export interface LoginRequest {
   username: string;
   password: string;
 }
 
-export interface CustomerSignupRequest {
+export interface SignupRequest {
   username: string;
   password: string;
   email: string;
+  role?: string;
+  fullName?: string;
+  phone?: string;
 }
 
 export interface JwtResponse {
   token: string;
   type: string;
+  refreshToken?: string;
   id: number;
   username: string;
   email: string;
@@ -48,14 +53,22 @@ export class AuthService {
       tap(response => {
         localStorage.setItem('currentUser', JSON.stringify(response));
         localStorage.setItem('token', response.token);
+        if (response.refreshToken) {
+          localStorage.setItem('refreshToken', response.refreshToken);
+        }
         this.currentUserSubject.next(response);
       })
     );
   }
 
+  signup(signupRequest: SignupRequest): Observable<any> {
+    return this.http.post(`${API_URL}/signup`, signupRequest);
+  }
+
   logout(): void {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
   }
@@ -75,14 +88,10 @@ export class AuthService {
   }
 
   isAdminOrManager(): boolean {
-    return this.hasRole('ADMIN') || this.hasRole('MANAGER');
+    return this.hasRole('ROLE_ADMIN') || this.hasRole('ROLE_MANAGER');
   }
 
   getCurrentUser(): JwtResponse | null {
     return this.currentUserSubject.value;
-  }
-
-  signup(signupRequest: CustomerSignupRequest): Observable<any> {
-    return this.http.post(`${API_URL}/customer/signup`, signupRequest);
   }
 }

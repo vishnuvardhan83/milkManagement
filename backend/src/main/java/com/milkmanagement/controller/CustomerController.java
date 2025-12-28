@@ -79,4 +79,13 @@ public class CustomerController {
                     .body("Error: " + e.getMessage());
         }
     }
+    
+    @GetMapping("/pending-amounts")
+    public ResponseEntity<?> getCustomersWithPendingAmounts() {
+        try {
+            return ResponseEntity.ok(customerService.getCustomersWithPendingAmounts());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
